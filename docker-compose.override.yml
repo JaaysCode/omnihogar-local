@@ -1,0 +1,23 @@
+# Auto-loaded by `docker compose` alongside docker-compose.yml (no flag needed).
+# Runs backend/frontend from source with hot reload — for local dev.
+# To run the prod-like build instead: docker compose -f docker-compose.yml up --build
+
+services:
+  backend:
+    build:
+      target: dev
+    volumes:
+      - ./omnihogar-backend:/src
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      # bind mounts (esp. on macOS) don't always fire native fs-change events reliably
+      DOTNET_USE_POLLING_FILE_WATCHER: "1"
+
+  frontend:
+    build:
+      target: dev
+    volumes:
+      - ./omnihogar-frontend:/app
+      - /app/node_modules
+    environment:
+      CHOKIDAR_USEPOLLING: "true"
