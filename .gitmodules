@@ -1,0 +1,6 @@
+[submodule "omnihogar-frontend"]
+	path = omnihogar-frontend
+	url = https://github.com/JaaysCode/omnihogar-frontend.git
+[submodule "omnihogar-backend"]
+	path = omnihogar-backend
+	url = https://github.com/JaaysCode/omnihogar-backend.git
