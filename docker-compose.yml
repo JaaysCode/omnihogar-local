@@ -31,6 +31,11 @@ services:
       # Scaffold migration (Identity + Product) not the real data model yet.
       # Flip to true once your own migrations exist and should auto-apply.
       ApplyMigrationsOnStartup: ${APPLY_MIGRATIONS_ON_STARTUP:-false}
+      # Mercado Pago Checkout Pro (HU-08/HU-09) — optional: an empty token just makes checkout
+      # calls fail with a "communication error" instead of stopping the whole API.
+      MercadoPago__AccessToken: ${MERCADOPAGO_ACCESS_TOKEN:-}
+      MercadoPago__FrontendBaseUrl: ${FRONTEND_ORIGIN:-http://localhost:4200}
+      MercadoPago__BackendPublicBaseUrl: ${MERCADOPAGO_BACKEND_PUBLIC_URL:-http://localhost:5244}
     ports:
       - "5244:8080"
 
