@@ -1,31 +1,22 @@
 services:
-  db:
-    image: docker.io/library/postgres:17-alpine
-    restart: unless-stopped
-    environment:
-      POSTGRES_DB: omnihogar
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-    volumes:
-      - db-data:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d omnihogar"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
-
   backend:
     build:
       context: ./omnihogar-backend
     restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
+    # Podman's rootless network has no outbound IPv6 route — Neon's hostname resolves to both A
+    # and AAAA records, and Npgsql picks the IPv6 one, which then fails with "Network is
+    # unreachable" (the DOTNET_SYSTEM_NET_DISABLEIPV6 env var doesn't cover this code path).
+    # Pin the hostname to its IPv4 address in /etc/hosts so DNS never offers IPv6 at all — keeps
+    # SSL Mode=VerifyFull working since the connection string still uses the hostname. If Neon
+    # rotates this IP and connections start failing again, re-resolve with
+    # `getent ahostsv4 <host>` and update it here.
+    extra_hosts:
+      - "ep-wild-resonance-b4tvsggw.c-6.us-east-2.aws.neon.tech:77.112.100.143"
     environment:
       ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
-      ConnectionStrings__DefaultConnection: Host=db;Port=5432;Database=omnihogar;Username=postgres;Password=${POSTGRES_PASSWORD:-postgres}
+      # Neon (cloud Postgres) — no local db container. Set the direct (non-pooler) connection
+      # string in .env; see Neon dashboard → Connection Details → toggle "Pooled connection" off.
+      ConnectionStrings__DefaultConnection: ${DATABASE_CONNECTION_STRING:?set DATABASE_CONNECTION_STRING in .env (Neon connection string)}
       Jwt__Secret: ${JWT_SECRET:?set JWT_SECRET in .env}
       Cors__AllowedOrigins__0: ${FRONTEND_ORIGIN:-http://localhost:4200}
       # Scaffold migration (Identity + Product) not the real data model yet.
@@ -49,6 +40,3 @@ services:
       PORT: 4000
     ports:
       - "4200:4000"
-
-volumes:
-  db-data:
