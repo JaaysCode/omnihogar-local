@@ -29,11 +29,11 @@ services:
       Stripe__BackendPublicBaseUrl: ${BACKEND_PUBLIC_URL:-http://localhost:5244}
       # Password recovery (HU-15) — real SMTP relay (Brevo). Required: the feature can't work
       # without it, so an unset value fails loudly at startup instead of silently no-op'ing.
-      Email__SmtpHost: ${EMAIL_SMTP_HOST:-smtp-relay.brevo.com}
+      Email__SmtpHost: ${EMAIL_SMTP_HOST:-smtp-relay.sendinblue.com}
       Email__SmtpPort: ${EMAIL_SMTP_PORT:-587}
       Email__SmtpUsername: ${EMAIL_SMTP_USERNAME:?set EMAIL_SMTP_USERNAME in .env (tu cuenta Brevo)}
       Email__SmtpPassword: ${EMAIL_SMTP_PASSWORD:?set EMAIL_SMTP_PASSWORD in .env (SMTP key de Brevo, no la API key)}
-      Email__FromAddress: ${EMAIL_FROM_ADDRESS:-no-reply@omnihogar.example}
+      Email__FromAddress: ${EMAIL_FROM_ADDRESS:-andresnose2016@gmail.com}
       Email__FrontendBaseUrl: ${FRONTEND_ORIGIN:-http://localhost:4200}
     ports:
       - "5244:8080"
