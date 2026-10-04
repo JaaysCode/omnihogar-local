@@ -35,6 +35,11 @@ services:
       Email__SmtpPassword: ${EMAIL_SMTP_PASSWORD:?set EMAIL_SMTP_PASSWORD in .env (SMTP key de Brevo, no la API key)}
       Email__FromAddress: ${EMAIL_FROM_ADDRESS:-andresnose2016@gmail.com}
       Email__FrontendBaseUrl: ${FRONTEND_ORIGIN:-http://localhost:4200}
+      # Chatbot NLU (HU-19) — OpenRouter, modelo gratuito. Requerido: todo el chatbot deja de
+      # funcionar sin esto, así que falla fuerte en el arranque en vez de fallar en cada mensaje.
+      OpenRouter__ApiKey: ${OPENROUTER_API_KEY:?set OPENROUTER_API_KEY in .env}
+      # TODO: verificar este id de modelo gratuito contra https://openrouter.ai/models al usar.
+      OpenRouter__Model: ${OPENROUTER_MODEL:-REPLACE_ME_VERIFY_FREE_MODEL_ID}
     ports:
       - "5244:8080"
 
